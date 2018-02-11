@@ -7,6 +7,7 @@ import {CubeComponent} from './component/cube/cube.component';
 import {ListComponent} from './component/list/list.component';
 import { ShapeGeometryComponent } from './component/shape-geometry/shape-geometry.component';
 import { ShapeComponent } from './component/shape/shape.component';
+import { SceneComponent } from './component/scene/scene.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { ShapeComponent } from './component/shape/shape.component';
     CubeComponent,
     ListComponent,
     ShapeGeometryComponent,
-    ShapeComponent]
+    ShapeComponent,
+    SceneComponent]
 })
 export class MyappModule { }

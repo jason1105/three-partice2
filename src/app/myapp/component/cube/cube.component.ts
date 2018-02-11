@@ -1,43 +1,39 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import * as THREE from 'three';
+import {SceneComponent} from "../scene/scene.component";
 
 @Component({
   selector: 'app-cube',
   templateUrl: './cube.component.html',
   styleUrls: ['./cube.component.css']
 })
-export class CubeComponent implements OnInit {
+export class CubeComponent implements OnInit, AfterViewInit {
 
   constructor() {
   }
 
-  @ViewChild("content")
-  container: ElementRef;
+  cube;
+  @ViewChild(SceneComponent)
+  scene: SceneComponent;
 
   ngOnInit() {
-    // Our Javascript will go here.
-    let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.5, 1000);
-    let renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    this.container.nativeElement.appendChild(renderer.domElement);
 
     let geometry = new THREE.BoxGeometry(1, 1, 1);
     let material = new THREE.MeshBasicMaterial({
       color: 0x00ff00
     });
-    let cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    this.cube = new THREE.Mesh(geometry, material);
 
-    camera.position.z = 5;
+  }
 
-    let render = function () {
+  ngAfterViewInit(): void {
+    let render = () => {
       requestAnimationFrame(render);
 
-      cube.rotation.x += 0;
-      cube.rotation.y += 0;
+      this.cube.rotation.x += 0.1;
+      this.cube.rotation.y += 0;
 
-      renderer.render(scene, camera);
+      this.scene.render();
     };
 
     render();
