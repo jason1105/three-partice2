@@ -11,14 +11,13 @@ export class CubeComponent implements OnInit {
   constructor() {
   }
 
-  @ViewChild("cubeContent")
+  @ViewChild("content")
   container: ElementRef;
 
   ngOnInit() {
     // Our Javascript will go here.
     let scene = new THREE.Scene();
-    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
+    let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.5, 1000);
     let renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     this.container.nativeElement.appendChild(renderer.domElement);
@@ -35,8 +34,8 @@ export class CubeComponent implements OnInit {
     let render = function () {
       requestAnimationFrame(render);
 
-      cube.rotation.x += 0.1;
-      cube.rotation.y += 0.1;
+      cube.rotation.x += 0;
+      cube.rotation.y += 0;
 
       renderer.render(scene, camera);
     };
