@@ -12,7 +12,8 @@ import "three/examples/js/loaders/ColladaLoader";
 export class SceneComponent implements AfterViewInit, OnInit {
 
   private renderer: THREE.WebGLRenderer;
-  private camera: THREE.PerspectiveCamera;
+  // private camera: THREE.PerspectiveCamera;
+  private camera: THREE.OrthographicCamera;
   private cameraTarget: THREE.Vector3;
   public scene: THREE.Scene;
 
@@ -28,7 +29,7 @@ export class SceneComponent implements AfterViewInit, OnInit {
   private canvasRef: ElementRef;
 
   @Input()
-  set object(object){
+  set object(object) {
     this._object = object;
   }
 
@@ -66,16 +67,27 @@ export class SceneComponent implements AfterViewInit, OnInit {
 
   private createCamera() {
     let aspectRatio = this.getAspectRatio();
-    this.camera = new THREE.PerspectiveCamera(
-      this.fieldOfView,
-      aspectRatio,
-      this.nearClippingPane,
-      this.farClippingPane
+    // this.camera = new THREE.PerspectiveCamera(
+    //   this.fieldOfView,
+    //   aspectRatio,
+    //   this.nearClippingPane,
+    //   this.farClippingPane
+    // );
+
+    var frustumSize = 100
+    var aspect = window.innerWidth / window.innerHeight;
+    this.camera = new THREE.OrthographicCamera(
+      frustumSize * aspect / -2,
+      frustumSize * aspect / 2,
+      frustumSize / 2,
+      frustumSize / -2,
+      1,
+      200
     );
 
     // Set position and look at
-    this.camera.position.x = 10;
-    this.camera.position.y = 10;
+    this.camera.position.x = -20;
+    this.camera.position.y = 50;
     this.camera.position.z = 100;
   }
 
@@ -166,7 +178,7 @@ export class SceneComponent implements AfterViewInit, OnInit {
     this.canvas.style.height = "100%";
     console.log("onResize: " + this.canvas.clientWidth + ", " + this.canvas.clientHeight);
 
-    this.camera.aspect = this.getAspectRatio();
+    // this.camera.aspect = this.getAspectRatio();
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
     this.render();
@@ -190,6 +202,7 @@ export class SceneComponent implements AfterViewInit, OnInit {
     // this.addControls();
 
   }
+
   ngOnInit(): void {
     this.createScene();
     this.createLight();
