@@ -49,6 +49,7 @@ export class ShapeGeometryComponent implements OnInit {
     };
 
     render();
+
   }
 
 }

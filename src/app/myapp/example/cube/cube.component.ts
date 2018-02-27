@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import * as THREE from "three";
-import {SceneComponent} from "../scene/scene.component";
+import {SceneComponent} from "../../component/scene/scene.component";
 
 @Component({
   selector: 'app-cube',

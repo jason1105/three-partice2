@@ -3,11 +3,11 @@ import {CommonModule} from '@angular/common';
 
 import {MyappRoutingModule} from './myapp-routing.module';
 import {MyappComponent} from './myapp.component';
-import {CubeComponent} from './component/cube/cube.component';
-import {ListComponent} from './component/list/list.component';
-import { ShapeGeometryComponent } from './component/shape-geometry/shape-geometry.component';
-import { ShapeComponent } from './component/shape/shape.component';
 import { SceneComponent } from './component/scene/scene.component';
+import { LoadSceneComponent } from './example/load-scene/load-scene.component';
+import {CubeComponent} from "./example/cube/cube.component";
+import { DrawBridgeComponent } from './example/draw-bridge/draw-bridge.component';
+import {ShapeGeometryComponent} from "./example/shape-geometry/shape-geometry.component";
 
 @NgModule({
   imports: [
@@ -17,9 +17,9 @@ import { SceneComponent } from './component/scene/scene.component';
   declarations: [
     MyappComponent,
     CubeComponent,
-    ListComponent,
     ShapeGeometryComponent,
-    ShapeComponent,
-    SceneComponent]
+    SceneComponent,
+    LoadSceneComponent,
+    DrawBridgeComponent]
 })
 export class MyappModule { }

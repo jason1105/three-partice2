@@ -1,10 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {MyappComponent} from "./myapp.component";
-import {CubeComponent} from "./component/cube/cube.component";
-import {ShapeGeometryComponent} from "./component/shape-geometry/shape-geometry.component";
-import {ShapeComponent} from "./component/shape/shape.component";
 import {SceneComponent} from "./component/scene/scene.component";
+import {LoadSceneComponent} from "./example/load-scene/load-scene.component";
+import {CubeComponent} from "./example/cube/cube.component";
+import {DrawBridgeComponent} from "./example/draw-bridge/draw-bridge.component";
+import {ShapeGeometryComponent} from "./example/shape-geometry/shape-geometry.component";
 
 export const myappRoutes: Routes = [
   {
@@ -13,8 +14,9 @@ export const myappRoutes: Routes = [
     children: [
       {path: "cube", component: CubeComponent},
       {path: "shape-geometry", component: ShapeGeometryComponent},
-      {path: "shape", component: ShapeComponent},
-      {path: "scene", component: SceneComponent}
+      {path: "scene", component: SceneComponent},
+      {path: "load-scene", component: LoadSceneComponent},
+      {path: "draw-bridge", component: DrawBridgeComponent}
     ]
   }
 ];

@@ -15,7 +15,7 @@ export class SceneComponent implements AfterViewInit, OnInit {
   // private camera: THREE.PerspectiveCamera;
   private camera: THREE.OrthographicCamera;
   private cameraTarget: THREE.Vector3;
-  public scene: THREE.Scene;
+  public _scene: THREE.Scene;
 
   public fieldOfView: number = 60;
   public nearClippingPane: number = 1;
@@ -33,6 +33,12 @@ export class SceneComponent implements AfterViewInit, OnInit {
     this._object = object;
   }
 
+  @Input()
+  set scene(scene) {
+    this._scene = scene;
+    this.createScene();
+  }
+
   constructor() {
     this.render = this.render.bind(this);
     this.onModelLoadingCompleted = this.onModelLoadingCompleted.bind(this);
@@ -43,26 +49,29 @@ export class SceneComponent implements AfterViewInit, OnInit {
   }
 
   private createScene() {
-    this.scene = new THREE.Scene();
-    this.scene.add(new THREE.AxisHelper(200));
-    var loader = new THREE.ColladaLoader();
-    loader.load('assets/model/multimaterial.dae', this.onModelLoadingCompleted);
+
+    if (!this._scene) {
+      this._scene = new THREE.Scene();
+    }
+    this._scene.add(new THREE.AxisHelper(200));
+    //var loader = new THREE.ColladaLoader();
+    //loader.load('assets/model/multimaterial.dae', this.onModelLoadingCompleted);
   }
 
   private onModelLoadingCompleted(collada) {
     var modelScene = collada.scene;
-    this.scene.add(modelScene);
+    this._scene.add(modelScene);
     this.render();
   }
 
   private createLight() {
     var light = new THREE.PointLight(0xffffff, 1, 1000);
     light.position.set(0, 0, 100);
-    this.scene.add(light);
+    this._scene.add(light);
 
     var light = new THREE.PointLight(0xffffff, 1, 1000);
     light.position.set(0, 0, -100);
-    this.scene.add(light);
+    this._scene.add(light);
   }
 
   private createCamera() {
@@ -87,7 +96,7 @@ export class SceneComponent implements AfterViewInit, OnInit {
 
     // Set position and look at
     this.camera.position.x = -20;
-    this.camera.position.y = 50;
+    this.camera.position.y = 150;
     this.camera.position.z = 100;
   }
 
@@ -121,7 +130,7 @@ export class SceneComponent implements AfterViewInit, OnInit {
   }
 
   public render() {
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this._scene, this.camera);
     //console.log("111" +this.object);
   }
 
@@ -147,7 +156,7 @@ export class SceneComponent implements AfterViewInit, OnInit {
     raycaster.setFromCamera(mouse, this.camera);
 
     var obj: THREE.Object3D[] = [];
-    this.findAllObjects(obj, this.scene);
+    this.findAllObjects(obj, this._scene);
     var intersects = raycaster.intersectObjects(obj);
     console.log("Scene has " + obj.length + " objects");
     console.log(intersects.length + " intersected objects found")
@@ -189,8 +198,11 @@ export class SceneComponent implements AfterViewInit, OnInit {
     console.log("onKeyPress: " + event.key);
   }
 
+
   private addObject(object) {
-    this.scene.add(object);
+    if (object) {
+      this._scene.add(object);
+    }
   }
 
   /* LIFECYCLE */

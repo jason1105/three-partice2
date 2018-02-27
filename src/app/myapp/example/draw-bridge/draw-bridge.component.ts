@@ -1,13 +1,14 @@
-import {Component, OnInit, ViewChild, AfterViewInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
+import {SceneComponent} from "../../component/scene/scene.component";
 import * as THREE from "three";
-import {SceneComponent} from "../scene/scene.component";
 
 @Component({
-  selector: 'app-shape',
-  templateUrl: './shape.component.html',
-  styleUrls: ['./shape.component.css']
+  selector: 'app-draw-bridge',
+  templateUrl: './draw-bridge.component.html',
+  styleUrls: ['./draw-bridge.component.css']
 })
-export class ShapeComponent implements OnInit, AfterViewInit {
+export class DrawBridgeComponent implements OnInit {
+
 
   constructor() {
   }
@@ -55,4 +56,5 @@ export class ShapeComponent implements OnInit, AfterViewInit {
 
     render();
   }
+
 }
