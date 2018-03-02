@@ -1,15 +1,14 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {Component, OnInit, ViewChild, OnDestroy} from "@angular/core";
 import {SceneComponent} from "../../component/scene/scene.component";
 import * as THREE from "three";
 import {Vector3} from "three";
-// import "three/examples/js/modifiers/BufferSubdivisionModifier";
 
 @Component({
   selector: 'app-draw-bridge',
   templateUrl: './draw-bridge.component.html',
   styleUrls: ['./draw-bridge.component.css']
 })
-export class DrawBridgeComponent implements OnInit {
+export class DrawBridgeComponent implements OnInit, OnDestroy {
 
   constructor() {
   }
@@ -61,6 +60,17 @@ export class DrawBridgeComponent implements OnInit {
 
   rectMesh;
   geometry;
+  freq: number = 5; // 变形频率
+  amplitude: number = 5; // 变幸福度
+  gui: any;
+  baseColor = new THREE.Color(0x00ff00);
+
+
+  params = {
+    Freq: 5,
+    Amplitude: 2,
+    motion: true,
+  };
 
   @ViewChild(SceneComponent)
   scene: SceneComponent;
@@ -85,11 +95,9 @@ export class DrawBridgeComponent implements OnInit {
     this.geometry.faces.push(new THREE.Face3(5, 4, 10));
     this.geometry.faces.push(new THREE.Face3(5, 10, 11));
 
-    let baseColor = new THREE.Color(0x00ff00);
-
     for (let i = 0; i < this.geometry.faces.length; i++) {
       let face = this.geometry.faces[i];
-      this.geometry.faces[i].vertexColors = [baseColor.clone(), baseColor.clone(), baseColor.clone()];
+      this.geometry.faces[i].vertexColors = [this.baseColor.clone(), this.baseColor.clone(), this.baseColor.clone()];
     }
 
     this.geometry.computeBoundingSphere();
@@ -108,8 +116,33 @@ export class DrawBridgeComponent implements OnInit {
     material.side = THREE.DoubleSide;
 
     this.rectMesh = new THREE.Mesh(this.geometry, material);
-    // this.rectMesh.colorsNeedUpdate = true;
+    this.initPanel();
+  }
 
+  destroyPanel() {
+    this.gui.destroy();
+  }
+
+  initPanel() {
+
+    this.gui = new dat.GUI();
+    this.gui.add(this.params, 'motion');
+
+    var folder = this.gui.addFolder('Morph Targets');
+
+    folder.add(this.params, 'Freq', 2, 10)
+      .step(0.01)
+      .onChange((value) => {
+        this.freq = value;
+      });
+
+    folder.add(this.params, 'Amplitude', 1, 5)
+      .step(0.01)
+      .onChange((value) => {
+        this.amplitude = value
+      });
+
+    folder.open();
   }
 
   getMorphed(mesh, geometry, index) {
@@ -139,58 +172,58 @@ export class DrawBridgeComponent implements OnInit {
     return vA;
   }
 
-  ngAfterViewInit(): void {
-    let weight = 0; // morph权重
-    let clock = new THREE.Clock();
-    let ratio: number = 5; // 变形频率
-    let amplitude: number = 2; // 变形幅度
+  calculate(clock) {
+    let weight = Math.sin(clock.getElapsedTime() * this.freq) * this.amplitude;; // morph权重
     let faceIndices = ['a', 'b', 'c'];
+
+    for (let i = 0; i < this._vertices.length - 1; i++) {
+      this.rectMesh.morphTargetInfluences[i] = weight;
+    }
+
+    for (let i = 0; i < this.geometry.faces.length; i++) {
+      let face = this.geometry.faces[i];
+
+      for (let j = 0; j < 3; j++) {
+        let vector = this.geometry.vertices[face[faceIndices[j]]];
+        let updatedVec = this.getMorphed(this.rectMesh, this.geometry, face[faceIndices[j]]);
+
+
+        let xx = Math.round((updatedVec.x - vector.x) / 2);
+        let yy = Math.round((updatedVec.y - vector.y) / 2);
+        let zz = Math.round((updatedVec.z - vector.z) / 2);
+        let ii = xx + yy + zz;
+
+        let dir = 1;
+        if ((0 > xx) || (0 >> yy) || (0 > zz)) dir = -1;
+
+        if (ii !== 0) {
+          let color = new THREE.Color().setHSL(this.baseColor.getHSL().h + Math.abs(Math.sin(clock.getElapsedTime() * this.freq) * 1 / 3) * dir, 1, 0.5);
+
+          face.vertexColors[j].copy(color);
+          this.geometry.colorsNeedUpdate = true;
+
+        }
+      }
+
+    }
+  }
+
+  ngAfterViewInit(): void {
+
+    let clock = new THREE.Clock();
 
     let animate = () => {
       requestAnimationFrame(animate);
-
-      weight = Math.sin(clock.getElapsedTime() * ratio) * amplitude;
-
-
-      for (let i = 0; i < this._vertices.length - 1; i++) {
-        this.rectMesh.morphTargetInfluences[i] = weight;
+      if (this.params.motion) {
+        this.calculate(clock);
       }
-
-
-      for (let i = 0; i < this.geometry.faces.length; i++) {
-        let face = this.geometry.faces[i];
-
-
-        for (let j = 0; j < 3; j++) {
-          let vector = this.geometry.vertices[face[faceIndices[j]]];
-          let updatedVec = this.getMorphed(this.rectMesh, this.geometry, face[faceIndices[j]]);
-
-          let dcolor = new THREE.Color(0x00ff00);
-
-          let xx = Math.round((updatedVec.x - vector.x) / 2);
-          let yy = Math.round((updatedVec.y - vector.y) / 2);
-          let zz = Math.round((updatedVec.z - vector.z) / 2);
-          let ii = xx + yy + zz;
-
-          let dir = 1;
-          if ((0 > xx) || (0 >> yy) || (0 > zz)) dir = -1;
-
-          if (ii !== 0) {
-            dcolor.setHSL(dcolor.getHSL().h + Math.abs(Math.sin(clock.getElapsedTime() * ratio) * 1 / 3) * dir, 1, 0.5);
-
-            face.vertexColors[j].copy(dcolor);
-            // console.log(face.vertexColors[j]);
-            this.geometry.colorsNeedUpdate = true;
-
-          }
-        }
-
-      }
-
       this.scene.render();
     };
 
     animate();
   }
 
+  ngOnDestroy(): void {
+    this.destroyPanel();
+  }
 }
