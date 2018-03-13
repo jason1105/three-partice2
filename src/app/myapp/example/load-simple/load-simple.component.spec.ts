@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoadCoinvSimpleComponent } from './load-coinv-simple.component';
+import { LoadSimpleComponent } from './load-simple.component';
 
-describe('LoadCoinvSimpleComponent', () => {
-  let component: LoadCoinvSimpleComponent;
-  let fixture: ComponentFixture<LoadCoinvSimpleComponent>;
+describe('LoadSimpleComponent', () => {
+  let component: LoadSimpleComponent;
+  let fixture: ComponentFixture<LoadSimpleComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoadCoinvSimpleComponent ]
+      declarations: [ LoadSimpleComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoadCoinvSimpleComponent);
+    fixture = TestBed.createComponent(LoadSimpleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

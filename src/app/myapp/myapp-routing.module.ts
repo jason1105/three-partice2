@@ -7,7 +7,7 @@ import {CubeComponent} from "./example/cube/cube.component";
 import {DrawBridgeComponent} from "./example/draw-bridge/draw-bridge.component";
 import {ShapeGeometryComponent} from "./example/shape-geometry/shape-geometry.component";
 import {LoadBridgeComponent} from "./example/load-bridge/load-bridge.component";
-import {LoadCoinvSimpleComponent} from "./example/load-coinv-simple/load-coinv-simple.component";
+import {LoadSimpleComponent} from "./example/load-simple/load-simple.component";
 
 export const myappRoutes: Routes = [
   {
@@ -20,7 +20,7 @@ export const myappRoutes: Routes = [
       {path: "load-scene", component: LoadSceneComponent},
       {path: "draw-bridge", component: DrawBridgeComponent},
       {path: "load-bridge", component: LoadBridgeComponent},
-      {path: "load-coinv-simple", component: LoadCoinvSimpleComponent}
+      {path: "load-simple", component: LoadSimpleComponent}
     ]
   }
 ];

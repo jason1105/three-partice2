@@ -4,11 +4,11 @@ import * as THREE from "three";
 import {ThreeLoaderService} from "./loader.service";
 
 @Component({
-  selector: 'app-load-coinv-simple',
-  templateUrl: './load-coinv-simple.component.html',
-  styleUrls: ['./load-coinv-simple.component.css']
+  selector: 'app-load-simple',
+  templateUrl: './load-simple.component.html',
+  styleUrls: ['./load-simple.component.css']
 })
-export class LoadCoinvSimpleComponent implements OnInit, AfterViewInit {
+export class LoadSimpleComponent implements OnInit, AfterViewInit {
 
   private renderer: THREE.WebGLRenderer;
   // private camera: THREE.PerspectiveCamera;

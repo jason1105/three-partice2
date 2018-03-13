@@ -9,8 +9,8 @@ import {CubeComponent} from "./example/cube/cube.component";
 import { DrawBridgeComponent } from './example/draw-bridge/draw-bridge.component';
 import {ShapeGeometryComponent} from "./example/shape-geometry/shape-geometry.component";
 import { LoadBridgeComponent } from './example/load-bridge/load-bridge.component';
-import { LoadCoinvSimpleComponent } from './example/load-coinv-simple/load-coinv-simple.component';
-import {ThreeLoaderService} from "./example/load-coinv-simple/loader.service";
+import { LoadSimpleComponent } from './example/load-simple/load-simple.component';
+import {ThreeLoaderService} from "./example/load-simple/loader.service";
 
 @NgModule({
   imports: [
@@ -25,7 +25,7 @@ import {ThreeLoaderService} from "./example/load-coinv-simple/loader.service";
     LoadSceneComponent,
     DrawBridgeComponent,
     LoadBridgeComponent,
-    LoadCoinvSimpleComponent],
+    LoadSimpleComponent],
   providers: [
     ThreeLoaderService
   ]
