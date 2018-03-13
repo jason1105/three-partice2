@@ -1,19 +1,19 @@
-import {AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, AfterViewInit, ElementRef, Input, HostListener} from '@angular/core';
+import {SceneComponent} from "../../component/scene/scene.component";
 import * as THREE from "three";
-import "./js/EnableThreeExamples";
-import "three/examples/js/controls/OrbitControls";
-import "three/examples/js/loaders/ColladaLoader";
+import {ThreeLoaderService} from "./loader.service";
 
 @Component({
-  selector: 'app-scene',
-  templateUrl: './scene.component.html',
-  styleUrls: ['./scene.component.css']
+  selector: 'app-load-coinv-simple',
+  templateUrl: './load-coinv-simple.component.html',
+  styleUrls: ['./load-coinv-simple.component.css']
 })
-export class SceneComponent implements AfterViewInit, OnInit {
+export class LoadCoinvSimpleComponent implements OnInit, AfterViewInit {
 
   private renderer: THREE.WebGLRenderer;
   // private camera: THREE.PerspectiveCamera;
   private camera: THREE.OrthographicCamera;
+
   private cameraTarget: THREE.Vector3;
   public _scene: THREE.Scene;
 
@@ -23,7 +23,11 @@ export class SceneComponent implements AfterViewInit, OnInit {
 
   public controls: THREE.OrbitControls;
 
+  mixer: THREE.AnimationMixer;
+  clock: THREE.Clock;
+
   _object;
+  url = "assets/scene/monster.json";
 
   @ViewChild('canvas')
   private canvasRef: ElementRef;
@@ -39,7 +43,7 @@ export class SceneComponent implements AfterViewInit, OnInit {
     this.createScene();
   }
 
-  constructor() {
+  constructor(private loader: ThreeLoaderService) {
     this.render = this.render.bind(this);
     this.onModelLoadingCompleted = this.onModelLoadingCompleted.bind(this);
   }
@@ -48,12 +52,30 @@ export class SceneComponent implements AfterViewInit, OnInit {
     return this.canvasRef.nativeElement;
   }
 
+  private init() {
+    this.clock = new THREE.Clock();
+
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvas,
+      antialias: true
+    });
+    this.renderer.setPixelRatio(devicePixelRatio);
+    this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
+
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.setClearColor(0xffffff, 1);
+    this.renderer.autoClear = true;
+  }
+
   private createScene() {
 
     if (!this._scene) {
       this._scene = new THREE.Scene();
     }
     this._scene.add(new THREE.AxisHelper(200));
+    this.mixer = new THREE.AnimationMixer(this._scene);
+
     //var loader = new THREE.ColladaLoader();
     //loader.load('assets/model/multimaterial.dae', this.onModelLoadingCompleted);
   }
@@ -121,17 +143,32 @@ export class SceneComponent implements AfterViewInit, OnInit {
     this.renderer.setClearColor(0xffffff, 1);
     this.renderer.autoClear = true;
 
-    let component: SceneComponent = this;
-
-    (function render() {
-      //requestAnimationFrame(render);
-      component.render();
-    }());
+    // let component: LoadCoinvSimpleComponent = this;
+    //
+    // (function render() {
+    //   //requestAnimationFrame(render);
+    //   component.render();
+    // }());
   }
 
-  public render() {
-    this.renderer.render(this._scene, this.camera);
+  animate = () => {
+    requestAnimationFrame(this.animate);
+    this.render();
+    //stats.update();
+  }
+
+  render = () => {
+    //this.renderer.render(this._scene, this.camera);
     //console.log("111" +this.object);
+
+
+    var timer = Date.now() * 0.0005;
+    this.camera.position.x = Math.cos(timer) * 10;
+    this.camera.position.y = 4;
+    this.camera.position.z = Math.sin(timer) * 10;
+    this.mixer.update(this.clock.getDelta());
+    this.camera.lookAt(this._scene.position);
+    this.renderer.render(this._scene, this.camera);
   }
 
   public addControls() {
@@ -180,7 +217,6 @@ export class SceneComponent implements AfterViewInit, OnInit {
     console.log("onMouseUp");
   }
 
-
   @HostListener('window:resize', ['$event'])
   public onResize(event: Event) {
     this.canvas.style.width = "100%";
@@ -198,30 +234,52 @@ export class SceneComponent implements AfterViewInit, OnInit {
     console.log("onKeyPress: " + event.key);
   }
 
-
   private addObject(object) {
     if (object) {
       this._scene.add(object);
     }
   }
 
+  addToScene(geometry, materials) {
+
+    var material = materials[0];
+    material.morphTargets = true;
+    material.color.setHex(0xffaaaa);
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(0, 0, 0);
+    mesh.scale.set(0.01, 0.01, 0.01);
+    //object.matrixAutoUpdate = false;
+    //object.updateMatrix();
+
+    this._scene.add(mesh);
+    this.mixer.clipAction(geometry.animations[0], mesh)
+      .setDuration(1)
+      .startAt(-Math.random())
+      .play();
+
+  }
+
   /* LIFECYCLE */
   ngAfterViewInit() {
-    // this.createScene();
-    // this.createLight();
-    // this.createCamera();
-    // this.startRendering();
-    // this.addControls();
-
   }
 
   ngOnInit(): void {
     console.log("Init scene.");
+    this.init();
     this.createScene();
     this.createLight();
     this.createCamera();
     this.addControls();
-    this.addObject(this._object);
-    this.startRendering();
+    //this.addObject(this._object);
+    this.loader.load(this.url).subscribe((obj: any) => {
+        if (obj["geometry"]) {
+          this.addToScene(obj["geometry"], obj["materials"]);
+
+          this.animate();
+        }
+      },
+      (err) => {
+        console.log(err);
+      });
   }
 }

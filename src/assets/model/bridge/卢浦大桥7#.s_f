@@ -1,0 +1,60 @@
+[DASP-REPORT-FORMAT-FILE]
+[HEAD]
+频率灵敏度分析报告(对质量)
+[FILEPATH]
+D:\Program Files (x86)\COINV\DASP11\ModalExample\频率灵敏度分析报告(对质量)
+[TITLE]
+工程信息: 
+[CONTANT]
+名称: 卢浦大桥#7                   	日期：2018-02-02      时间：08:41:29
+[TITLE]
+第 1阶模态，  模态频率为     0.3610Hz       阻尼为  0.6840% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE1.txt
+[TITLE]
+第 2阶模态，  模态频率为     0.4000Hz       阻尼为  0.6070% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE2.txt
+[TITLE]
+第 3阶模态，  模态频率为     0.6010Hz       阻尼为  1.0010% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE3.txt
+[TITLE]
+第 4阶模态，  模态频率为     0.7080Hz       阻尼为  1.6490% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE4.txt
+[TITLE]
+第 5阶模态，  模态频率为     0.8960Hz       阻尼为  1.7390% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE5.txt
+[TITLE]
+第 6阶模态，  模态频率为     0.9900Hz       阻尼为  1.0840% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE6.txt
+[TITLE]
+第 7阶模态，  模态频率为     1.1100Hz       阻尼为  1.9950% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE7.txt
+[TITLE]
+第 8阶模态，  模态频率为     1.1730Hz       阻尼为  0.4540% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE8.txt
+[TITLE]
+第 9阶模态，  模态频率为     1.3380Hz       阻尼为  0.4540% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE9.txt
+[TITLE]
+第10阶模态，  模态频率为     1.4770Hz       阻尼为  1.4350% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE10.txt
+[TITLE]
+第11阶模态，  模态频率为     1.6210Hz       阻尼为  1.0000% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE11.txt
+[TITLE]
+第12阶模态，  模态频率为     1.8150Hz       阻尼为  0.5880% 
+[LISTDATA]
+C:\Users\lv-wei\AppData\Local\Temp\SFRE12.txt
+[FOOT]
+单位:                                               报告人:                 
+[END]
