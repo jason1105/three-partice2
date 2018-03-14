@@ -22,27 +22,6 @@ export class ThreeLoaderService {
 
         subject.next({"geometry": geometry, "materials": materials});
         subject.complete();
-        //var material = materials[0];
-        //var object = new THREE.Mesh(geometry, material);
-        //object.position.set(0, 0, 0);
-        //object.scale.set(0.01, 0.01, 0.01);
-
-        //object.matrixAutoUpdate = false;
-        //object.updateMatrix();
-
-        // let geometry1 = new THREE.BoxGeometry(2, 2, 2);
-        // let material1 = new THREE.MeshBasicMaterial({
-        //   color: 0x00ff00,
-        //   wireframe: false,
-        //   morphTargets: true
-        // });
-        //
-        // let cube = new THREE.Mesh(geometry1, material1);
-        // this._scene.add(cube);
-
-        //this._scene.add(object);
-
-        //this.startRendering();
       },
 
       // onProgress callback
@@ -58,5 +37,36 @@ export class ThreeLoaderService {
     );
 
     return subject.asObservable();
+  }
+
+  addToScene(geometry, materials, scene, mixer) {
+
+    // var material = materials[0];
+    // material.morphTargets = true;
+    // material.color.setHex(0xffaaaa);
+
+    // let geometry = new THREE.BoxGeometry(2, 2, 2);
+    let material = new THREE.MeshBasicMaterial({
+      vertexColors: THREE.VertexColors,
+      morphTargets: true,
+      transparent: true
+    });
+
+    material = materials[0];
+    material['morphTargets'] = true;
+
+    // Use custom material
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(0, 0, 0);
+    mesh.scale.set(1, 1, 1);
+    //object.matrixAutoUpdate = false;
+    //object.updateMatrix();
+
+    scene.add(mesh);
+    mixer.clipAction(geometry.animations[0], mesh)
+      .setDuration(1)
+      .startAt(-Math.random())
+      .play();
+
   }
 }

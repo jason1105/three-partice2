@@ -3,6 +3,9 @@ import {SceneComponent} from "../../component/scene/scene.component";
 import * as THREE from "three";
 import {ThreeLoaderService} from "./loader.service";
 
+/**
+ * Load from JSON which created by blender
+ */
 @Component({
   selector: 'app-load-simple',
   templateUrl: './load-simple.component.html',
@@ -11,37 +14,22 @@ import {ThreeLoaderService} from "./loader.service";
 export class LoadSimpleComponent implements OnInit, AfterViewInit {
 
   private renderer: THREE.WebGLRenderer;
+
   // private camera: THREE.PerspectiveCamera;
   private camera: THREE.OrthographicCamera;
 
   private cameraTarget: THREE.Vector3;
-  public _scene: THREE.Scene;
-
-  public fieldOfView: number = 60;
-  public nearClippingPane: number = 1;
-  public farClippingPane: number = 1100;
+  public scene: THREE.Scene;
 
   public controls: THREE.OrbitControls;
 
   mixer: THREE.AnimationMixer;
   clock: THREE.Clock;
 
-  _object;
-  url = "assets/scene/monster.json";
+  url = "assets/scene/square.json";
 
   @ViewChild('canvas')
   private canvasRef: ElementRef;
-
-  @Input()
-  set object(object) {
-    this._object = object;
-  }
-
-  @Input()
-  set scene(scene) {
-    this._scene = scene;
-    this.createScene();
-  }
 
   constructor(private loader: ThreeLoaderService) {
     this.render = this.render.bind(this);
@@ -70,40 +58,31 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
 
   private createScene() {
 
-    if (!this._scene) {
-      this._scene = new THREE.Scene();
+    if (!this.scene) {
+      this.scene = new THREE.Scene();
     }
-    this._scene.add(new THREE.AxisHelper(200));
-    this.mixer = new THREE.AnimationMixer(this._scene);
-
-    //var loader = new THREE.ColladaLoader();
-    //loader.load('assets/model/multimaterial.dae', this.onModelLoadingCompleted);
+    this.scene.add(new THREE.AxisHelper(200));
+    this.mixer = new THREE.AnimationMixer(this.scene);
   }
 
   private onModelLoadingCompleted(collada) {
     var modelScene = collada.scene;
-    this._scene.add(modelScene);
+    this.scene.add(modelScene);
     this.render();
   }
 
   private createLight() {
     var light = new THREE.PointLight(0xffffff, 1, 1000);
     light.position.set(0, 0, 100);
-    this._scene.add(light);
+    this.scene.add(light);
 
     var light = new THREE.PointLight(0xffffff, 1, 1000);
     light.position.set(0, 0, -100);
-    this._scene.add(light);
+    this.scene.add(light);
   }
 
   private createCamera() {
     let aspectRatio = this.getAspectRatio();
-    // this.camera = new THREE.PerspectiveCamera(
-    //   this.fieldOfView,
-    //   aspectRatio,
-    //   this.nearClippingPane,
-    //   this.farClippingPane
-    // );
 
     var frustumSize = 100
     var aspect = window.innerWidth / window.innerHeight;
@@ -113,7 +92,7 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
       frustumSize / 2,
       frustumSize / -2,
       1,
-      200
+      2000
     );
 
     // Set position and look at
@@ -142,41 +121,32 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.setClearColor(0xffffff, 1);
     this.renderer.autoClear = true;
-
-    // let component: LoadCoinvSimpleComponent = this;
-    //
-    // (function render() {
-    //   //requestAnimationFrame(render);
-    //   component.render();
-    // }());
   }
 
   animate = () => {
+
     requestAnimationFrame(this.animate);
     this.render();
     //stats.update();
   }
 
   render = () => {
-    //this.renderer.render(this._scene, this.camera);
-    //console.log("111" +this.object);
-
 
     var timer = Date.now() * 0.0005;
-    this.camera.position.x = Math.cos(timer) * 10;
+    this.camera.position.x = Math.cos(timer) * 100;
     this.camera.position.y = 4;
-    this.camera.position.z = Math.sin(timer) * 10;
+    this.camera.position.z = Math.sin(timer) * 100;
     this.mixer.update(this.clock.getDelta());
-    this.camera.lookAt(this._scene.position);
-    this.renderer.render(this._scene, this.camera);
+    this.camera.lookAt(this.scene.position);
+    this.renderer.render(this.scene, this.camera);
   }
 
   public addControls() {
+
     this.controls = new THREE.OrbitControls(this.camera);
     this.controls.rotateSpeed = 1.0;
     this.controls.zoomSpeed = 1.2;
     this.controls.addEventListener('change', this.render);
-
   }
 
   /* EVENTS */
@@ -193,7 +163,7 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
     raycaster.setFromCamera(mouse, this.camera);
 
     var obj: THREE.Object3D[] = [];
-    this.findAllObjects(obj, this._scene);
+    this.findAllObjects(obj, this.scene);
     var intersects = raycaster.intersectObjects(obj);
     console.log("Scene has " + obj.length + " objects");
     console.log(intersects.length + " intersected objects found")
@@ -223,7 +193,6 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
     this.canvas.style.height = "100%";
     console.log("onResize: " + this.canvas.clientWidth + ", " + this.canvas.clientHeight);
 
-    // this.camera.aspect = this.getAspectRatio();
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
     this.render();
@@ -232,31 +201,6 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
   @HostListener('document:keypress', ['$event'])
   public onKeyPress(event: KeyboardEvent) {
     console.log("onKeyPress: " + event.key);
-  }
-
-  private addObject(object) {
-    if (object) {
-      this._scene.add(object);
-    }
-  }
-
-  addToScene(geometry, materials) {
-
-    var material = materials[0];
-    material.morphTargets = true;
-    material.color.setHex(0xffaaaa);
-    var mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(0, 0, 0);
-    mesh.scale.set(0.01, 0.01, 0.01);
-    //object.matrixAutoUpdate = false;
-    //object.updateMatrix();
-
-    this._scene.add(mesh);
-    this.mixer.clipAction(geometry.animations[0], mesh)
-      .setDuration(1)
-      .startAt(-Math.random())
-      .play();
-
   }
 
   /* LIFECYCLE */
@@ -271,15 +215,17 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
     this.createCamera();
     this.addControls();
     //this.addObject(this._object);
-    this.loader.load(this.url).subscribe((obj: any) => {
-        if (obj["geometry"]) {
-          this.addToScene(obj["geometry"], obj["materials"]);
-
-          this.animate();
+    this.loader.load(this.url)
+      .subscribe(
+        (obj: any) => {
+          if (obj["geometry"]) {
+            this.loader.addToScene(obj["geometry"], obj["materials"], this.scene, this.mixer);
+            this.animate();
+          }
+        },
+        (err) => {
+          console.log(err);
         }
-      },
-      (err) => {
-        console.log(err);
-      });
+      );
   }
 }
