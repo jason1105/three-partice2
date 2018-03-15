@@ -52,8 +52,8 @@ export class ThreeLoaderService {
       transparent: true
     });
 
-    material = materials[0];
-    material['morphTargets'] = true;
+    //material = materials[0];
+    //material['morphTargets'] = true;
 
     // Use custom material
     var mesh = new THREE.Mesh(geometry, material);
@@ -63,10 +63,83 @@ export class ThreeLoaderService {
     //object.updateMatrix();
 
     scene.add(mesh);
-    mixer.clipAction(geometry.animations[0], mesh)
-      .setDuration(1)
-      .startAt(-Math.random())
-      .play();
+    // mixer.clipAction(geometry.animations[0], mesh)
+    //   .setDuration(1)
+    //   .startAt(-Math.random())
+    //   .play();
 
+    return mesh;
+
+  }
+
+
+  getMorphed(mesh, index) {
+    var morphTargets = mesh.geometry.morphTargets;
+    var morphInfluences = mesh.morphTargetInfluences;
+
+    var vA = new THREE.Vector3();
+    var tempA = new THREE.Vector3();
+
+    var fvA = mesh.geometry.vertices[index]; // the vertex to transform
+
+    for (var t = 0, tl = morphTargets.length; t < tl; t++) {
+
+      var influence = morphInfluences[t];
+
+      if (influence === 0) continue;
+
+      var targets = morphTargets[t].vertices;
+
+      vA.addScaledVector(tempA.subVectors(targets[index], fvA), influence); // targets index must match vertex index
+
+
+    }
+
+    vA.add(fvA); // the transformed value
+
+    return vA;
+  }
+
+  calculate(clock, freq, amplitude, geometry, mesh, baseColor) {
+    let time = Math.sin(clock.elapsedTime * freq);
+    let weight = time * amplitude; // morph权重
+    let faceIndices = ['a', 'b', 'c'];
+
+    for (let i = 0; i < mesh.morphTargetInfluences.length; i++) {
+      mesh.morphTargetInfluences[i] =  weight;
+    }
+
+    for (let i = 0; i < geometry.faces.length; i++) {
+      let face = geometry.faces[i];
+
+      for (let j = 0; j < 3; j++) {
+        let vector = geometry.vertices[face[faceIndices[j]]];
+        let updatedVec = this.getMorphed(mesh, face[faceIndices[j]]);
+
+
+        // let xx = Math.round((updatedVec.x - vector.x) / 2);
+        // let yy = Math.round((updatedVec.y - vector.y) / 2);
+        // let zz = Math.round((updatedVec.z - vector.z) / 2);
+
+        let xx = ((updatedVec.x - vector.x) / 2);
+        let yy = ((updatedVec.y - vector.y) / 2);
+        let zz = ((updatedVec.z - vector.z) / 2);
+
+        let ii = xx + yy + zz;
+
+        let dir = 1;
+        // if ((0 > xx) || (0 >> yy) || (0 > zz)) dir = -1;
+        if (0 < weight) dir = -1;
+
+        if (ii !== 0) {
+          let color = new THREE.Color().setHSL(baseColor.getHSL().h + Math.abs(time * 1 / 3) * dir, 1, 0.5);
+
+          face.vertexColors[j].copy(color);
+          geometry.colorsNeedUpdate = true;
+
+        }
+      }
+
+    }
   }
 }

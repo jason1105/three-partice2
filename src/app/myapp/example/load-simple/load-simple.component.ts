@@ -25,6 +25,9 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
 
   mixer: THREE.AnimationMixer;
   clock: THREE.Clock;
+  geometry: THREE.Geometry;
+  mesh : THREE.Mesh;
+  baseColor = new THREE.Color(0x00ff00);
 
   url = "assets/scene/square.json";
 
@@ -123,9 +126,16 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
     this.renderer.autoClear = true;
   }
 
+  freq: number = 1; // 变形频率
+  amplitude: number = 0.5; // 变幸福度
+
+
+
   animate = () => {
 
     requestAnimationFrame(this.animate);
+
+    this.loader.calculate(this.clock, this.freq, this.amplitude, this.geometry, this.mesh, this.baseColor);
     this.render();
     //stats.update();
   }
@@ -133,11 +143,11 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
   render = () => {
 
     var timer = Date.now() * 0.0005;
-    this.camera.position.x = Math.cos(timer) * 100;
-    this.camera.position.y = 4;
-    this.camera.position.z = Math.sin(timer) * 100;
+    // this.camera.position.x = Math.cos(timer) * 100;
+    // this.camera.position.y = 4;
+    // this.camera.position.z = Math.sin(timer) * 100;
     this.mixer.update(this.clock.getDelta());
-    this.camera.lookAt(this.scene.position);
+    // this.camera.lookAt(this.scene.position);
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -219,7 +229,8 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
       .subscribe(
         (obj: any) => {
           if (obj["geometry"]) {
-            this.loader.addToScene(obj["geometry"], obj["materials"], this.scene, this.mixer);
+            this.geometry = obj["geometry"];
+            this.mesh = this.loader.addToScene(obj["geometry"], obj["materials"], this.scene, this.mixer);
             this.animate();
           }
         },
