@@ -4,6 +4,7 @@ import * as THREE from "three";
 import {ThreeLoaderService} from "./loader.service";
 
 /**
+ * Create sence.
  * Load from JSON which created by blender
  */
 @Component({
@@ -230,7 +231,8 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
         (obj: any) => {
           if (obj["geometry"]) {
             this.geometry = obj["geometry"];
-            this.mesh = this.loader.addToScene(obj["geometry"], obj["materials"], this.scene, this.mixer);
+            this.mesh = this.loader.parseToMesh(obj["geometry"], obj["materials"] );
+            this.scene.add(this.mesh);
             this.animate();
           }
         },

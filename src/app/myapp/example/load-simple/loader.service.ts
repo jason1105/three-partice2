@@ -8,6 +8,16 @@ import * as THREE from "three";
 @Injectable()
 export class ThreeLoaderService {
 
+  loadCoinv(url): Observable<any> {
+
+    let subject = new Subject<any>();
+
+    // Async request coinv modal data
+    // Parse data to mesh
+
+    return subject.asObservable();
+  }
+
   load(url): Observable<any> {
 
     let subject = new Subject<any>();
@@ -39,7 +49,7 @@ export class ThreeLoaderService {
     return subject.asObservable();
   }
 
-  addToScene(geometry, materials, scene, mixer) {
+  parseToMesh(geometry, materials) {
 
     // var material = materials[0];
     // material.morphTargets = true;
@@ -62,7 +72,6 @@ export class ThreeLoaderService {
     //object.matrixAutoUpdate = false;
     //object.updateMatrix();
 
-    scene.add(mesh);
     // mixer.clipAction(geometry.animations[0], mesh)
     //   .setDuration(1)
     //   .startAt(-Math.random())
