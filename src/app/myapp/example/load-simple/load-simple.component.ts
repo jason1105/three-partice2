@@ -95,8 +95,8 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
       frustumSize * aspect / 2,
       frustumSize / 2,
       frustumSize / -2,
-      1,
-      2000
+      -2000,
+      1000
     );
 
     // Set position and look at
@@ -133,7 +133,7 @@ export class LoadSimpleComponent implements OnInit, AfterViewInit {
 
 
   animate = () => {
-
+    console.log("animate have been invoked.");
     requestAnimationFrame(this.animate);
 
     this.loader.calculate(this.clock, this.freq, this.amplitude, this.geometry, this.mesh, this.baseColor);

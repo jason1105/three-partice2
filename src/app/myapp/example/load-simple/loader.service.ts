@@ -62,6 +62,8 @@ export class ThreeLoaderService {
       transparent: true
     });
 
+    material.side = THREE.DoubleSide;
+
     //material = materials[0];
     //material['morphTargets'] = true;
 
@@ -114,9 +116,12 @@ export class ThreeLoaderService {
     let weight = time * amplitude; // morph权重
     let faceIndices = ['a', 'b', 'c'];
 
-    for (let i = 0; i < mesh.morphTargetInfluences.length; i++) {
-      mesh.morphTargetInfluences[i] =  weight;
+    if (mesh.morphTargetInfluences) {
+      for (let i = 0; i < mesh.morphTargetInfluences.length; i++) {
+        mesh.morphTargetInfluences[i] = weight;
+      }
     }
+
 
     for (let i = 0; i < geometry.faces.length; i++) {
       let face = geometry.faces[i];
